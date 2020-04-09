@@ -1,18 +1,20 @@
-a = open("out.txt", 'r')
-
-
-b = a.readline()
 
 c = 0
-d = 0
-for i in b:
-    if("lol1" in i):
-        c = c + 1
-        d = max(d,c)
+d = ""
+while(1):
+    a = input()
+    if("lol1" in a):
+        if("lol1" in d):
+            pass
+        else:
+            #print(d)
+            d = a
+            print("lol1")
     else:
-        # if(d==34):
-        #     print(i)
-        c = 0
+        d = a
+        print(d)
 
-print(d)
+    if("fuck" in a):
+        break
+
 

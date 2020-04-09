@@ -8,7 +8,7 @@
 */
 #include <bits/stdc++.h>
 #include "ltree"
-
+#include <chrono> 
 #define FOR(i,j,k) for(ll i=j;i<k;i++)
 #define FOR1(i,j,k) for(ll i=j;i<=k;i++)
 #define FOR2(i,j,k) for(ll i=j;i>=k;i--)
@@ -19,7 +19,7 @@
     fprintf(stderr,"%s - %d (%s) = ",__PRETTY_FUNCTION__,__LINE__,#__VA_ARGS__);\
     _do(__VA_ARGS__);\
 }while(0)
-#define MOD 1000000007
+#define MOD 10000000007
 
 
 using namespace std;
@@ -48,28 +48,75 @@ void desperate_optimization(int precision){
 
 
 
+struct LOL{
+    ksb::LTree<int> a;
+    bool operator()(int _a, int _b){
+        a.printData();
+        cout<<el;
+        return _a < _b;
+    }
+};
+
+
+
+
 int main()
 {
     ksb::LTree<int> a(100, 0);
     //db(1);
-    for (int i = 0; i < 100; ++i)
+    *a.begin()=0;
+    for (int i = 1; i < 100; ++i)
     {
-        a[i] = a[i] = rand()%1024;
+        a[i] = i;
     }
-    // for (int i = 0; i < 100; ++i)
+    //a.printData();
+    // for (int i = 0; i <= 10000; ++i){
+    //     //cout<<i<<el;
+    //     auto itr = a.end();
+    //     ll j = 0;
+    //     ll k = a.end() - (a.begin() + i);
+    //     //cout<<k<<el;
+    //     while(k>=0) {++j;--itr;k--;}
+    //     //if(i!=(10000 - j)) cout<<i<<" "<<j<<" lol "<<el;
+    //     if(i!=0) if(i - 1 != (*itr)) cout<<"BBlol "<<(*itr)<<el;
+    // }
+    // for (int i = 0; i < 10000; ++i)
     // {
     //     cout<<a[i]<<" ";
     // }
-    ksb::LTree<int>::iterator::value_type c = 0;
-    cout<<c<<el;
-    sort(a.begin(), a.end());
-    reverse(a.begin(), a.end());
-    auto itr = a.begin();
+    // cout<<(a.end() - (a.begin() + 5000))<<el;
+    // cout<<(a.end() == (a.begin() + 10000))<<el;
+    // for(int i = 0; i < 10000; ++i){
+    //     for(int j = 0; j <=i; ++j){
+    //         cerr<<i<<" "<<j<<el;
+    //         if(i-j>=0){
+    //             if(i-j != ((a.end()-j) - (a.end()-i)))
+    //                 cout<<"Wasted \n";
+    //         }
+    //     }
+    // }
+    LOL ttt;
+    ttt.a = a;
+    //cout<<ttt(1,2)<<el;
+    auto start = chrono::high_resolution_clock::now();
+    sort(a.begin(), a.end(), ttt);
+    // reverse(a.begin(), a.end());
+    auto end = chrono::high_resolution_clock::now(); 
     // db(2);
-    while(itr!=a.end()){
-        cout<<(*itr)<<" ";
-        ++itr;
-    }
-    cout<<el;
+    // while(itr!=a.end()){
+    //     cout<<(*itr)<<" ";
+    //     ++itr;
+    // }
+    // for (int i = 0; i < 1000000; ++i)
+    // {
+    //     cout<<(*(itr + i))<<" ";
+    // }
+    double tt =  
+      chrono::duration_cast<chrono::nanoseconds>(end - start).count(); 
+
+    tt *= 1e-9; 
+    cout<<tt<<el;
+    // cout<<((a.begin() + 2) < (a.begin() + 10))<<el;
+    // cout<<((a.begin() + 12) < (a.begin() + 10))<<el;
     return 0;
 }
