@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 
 
-#define dbs(i) std::cout<<"lol"<<i<<"\n"
+#define // dbs(i) std::cout<<"lol"<<i<<"\n"
 
 
 namespace ksb{
@@ -137,14 +137,14 @@ namespace ksb{
             
 
             iterator& operator=(iterator&& x){
-                // dbs(15);
+                // dbs(" = "<< (_ptr->_dt)<<" "<<( x._ptr -> _dt));
                 _ptr = x._ptr;
                 x._ptr = nullptr;
                 return *this;
             }
 
             iterator& operator=(const iterator& x){
-                // dbs(14);
+                // dbs(" = "<< (_ptr->_dt)<<" "<<( x._ptr -> _dt));
                 _ptr = x._ptr;
                 return *this;
             }
@@ -152,7 +152,7 @@ namespace ksb{
 
 
             iterator operator++(){
-                // dbs(1);
+                // dbs(" ++ "<< (_ptr->_dt)<<" ");
                 if(_ptr -> _head != _ptr -> _end){
                     _ptr = (_ptr -> _head->_st);
                     return *this;
@@ -177,18 +177,18 @@ namespace ksb{
             }
 
             iterator operator++(int){
-                // dbs(2);
+                // dbs(" ++1 "<< (_ptr->_dt));
                 auto tmp = *this;
                 ++*this;
                 return tmp;
             }
 
             iterator operator--(){
-                // dbs(3<<" "<<(_ptr->_dt)<<" "<<(_ptr -> _prnt == nullptr));
+                // dbs(" -- "<< (_ptr->_dt)<<" ");
                 if(_ptr -> _prnt == nullptr){ 
-                    // dbs(22222);
+                    // // dbs(22222);
                     _ptr -> printData();
-                    // dbs(22222);
+                    // // dbs(22222);
                     _ptr = nullptr;
                     return *this;
                 }
@@ -217,11 +217,11 @@ namespace ksb{
             }
 
             iterator operator+(unsigned int inc){
-                // dbs(4);
+                // dbs(" +x "<< (_ptr->_dt)<<" "<<( inc));
                 ++c;
                 if(inc == 0) return *this;
                 if(inc == 1) {
-                    auto tmp = *this;
+                    iterator tmp = *this;
                     ++tmp;
                     return tmp;
                 }
@@ -234,33 +234,34 @@ namespace ksb{
                             return tt -> _st -> begin() + (inc - 1);
                         }
                         //std::cout<<"  inc = "<<inc<<"  sz = "<< tt -> _st -> _sz<<" \n";
-                        //// dbs(inc);
+                        //// // dbs(inc);
                         inc = inc - tt -> _st -> _sz;
                         tt = tt -> _ft;
                         
                         ++itr;
                     }
-                    // // dbs(3);std::cout<<"blah\n";
-                    // // dbs(inc);
+                    // // // dbs(3);std::cout<<"blah\n";
+                    // // // dbs(inc);
                     return iterator(nullptr);
                 }
-                inc = inc - (_ptr -> _sz - 1);
-                if(_ptr -> _prnt != nullptr){
-                    if(_ptr -> _prnt -> _ft != _ptr -> _prnt -> __prnt -> _end){
-                        return _ptr -> _prnt -> _ft -> _st -> begin() + (inc-1); 
+                LTree<T> *tmp = _ptr;
+                inc = inc - (tmp -> _sz - 1);
+                if(tmp -> _prnt != nullptr){
+                    if(tmp -> _prnt -> _ft != tmp -> _prnt -> __prnt -> _end){
+                        return tmp -> _prnt -> _ft -> _st -> begin() + (inc-1); 
                     }
-                    _ptr = _ptr -> _prnt -> __prnt;
-                    return _ptr -> begin() + (_ptr -> _sz + inc-1);
+                    tmp = tmp -> _prnt -> __prnt;
+                    return tmp -> begin() + (tmp -> _sz + inc-1);
                 }
 
                 if(inc == 1)
-                    return _ptr -> end();
+                    return tmp-> end();
                 return iterator(nullptr);
             }
 
 
             iterator operator-(unsigned int dec){
-                // dbs(5);
+                // dbs(" -x "<< (_ptr->_dt)<<" "<<( dec));
                 if(dec == 0) return *this;
                 if(dec == 1) {
                     auto tmp = *this;
@@ -287,7 +288,7 @@ namespace ksb{
 
             
             ptrdiff_t operator-(const iterator &x){
-                // dbs(6);
+                
                 if(x._ptr == _ptr) return 0;
                 LTree<T> *tmp = _ptr;
                 ptrdiff_t n = 0;
@@ -312,25 +313,26 @@ namespace ksb{
                     tmp = tmp -> _prnt -> __prnt;
                     --n;
                 }
+                // dbs(" - "<< (_ptr->_dt)<<" "<<( x._ptr -> _dt)<<" "<<n);
                 return n;
             }
 
             bool operator<(const iterator &x){
-                // dbs(7);
+                // dbs(" < "<< (_ptr->_dt)<<" "<<( x._ptr -> _dt));
                 if(x._ptr == nullptr || _ptr == nullptr) return false;
                 if(x._ptr -> _prnt == nullptr) return false;
                 return this->operator-(x) < 0;
             }
 
             bool operator<=(const iterator &x){
-                // dbs(8);
+                // dbs(" <= "<< (_ptr->_dt)<<" "<<( x._ptr -> _dt));
                 if(x._ptr == nullptr || _ptr == nullptr) return false;
                 if(_ptr -> _prnt == nullptr) return true;
                 return this -> operator<(x) || this -> operator==(x);
             }
 
             bool operator>(const iterator &x){
-                // dbs(9);
+                // dbs(" > "<< (_ptr->_dt)<<" "<<( x._ptr -> _dt));
                 if(x._ptr == nullptr || _ptr == nullptr) return false;
                 if(_ptr -> _prnt == nullptr) return false;
                 return !this->operator<=(x);
@@ -338,25 +340,25 @@ namespace ksb{
             }
 
             bool operator>=(const iterator &x){
-                // dbs(10);
+                // dbs(" >= "<< (_ptr->_dt)<<" "<<( x._ptr -> _dt));
                 if(x._ptr == nullptr || _ptr == nullptr) return false;
                 if(x._ptr -> _prnt == nullptr) return true;
                 return this -> operator>(x) || this -> operator==(x);
             }
 
             T &operator*(){
-                // dbs(13 <<" "<<(_ptr->_dt));
+                // dbs(" * "<< (_ptr->_dt)<<" ");
                 return _ptr->_dt;
             }
 
             bool operator==(const iterator &x){
-                // dbs(11 << (_ptr -> _dt) <<" "<< (x._ptr -> _dt)<<" "<< (x._ptr == _ptr));
+                // dbs(" == "<< (_ptr->_dt)<<" "<<( x._ptr -> _dt));
                 if(x._ptr == nullptr || _ptr == nullptr) return false;
                 return x._ptr == _ptr;
             }
 
             bool operator!=(const iterator &x){
-                // dbs(12);
+                // dbs(" != "<< (_ptr->_dt)<<" "<<( x._ptr -> _dt));
                 return !this->operator==(x);
             }
 

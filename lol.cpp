@@ -67,7 +67,7 @@ int main()
     //db(1);
     for (int i = 0; i < 100; ++i)
     {
-        a[i] = i;
+        a[i] = i+1;
     }
     //a.printData();
     // for (int i = 0; i <= 10000; ++i){

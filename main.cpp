@@ -49,9 +49,9 @@ void desperate_optimization(int precision){
 
 
 struct LOL{
-    ksb::LTree<int> a;
+    ksb::LTree<int> *a;
     bool operator()(int _a, int _b){
-        a.printData();
+        a->printData();
         cout<<el;
         return _a < _b;
     }
@@ -64,10 +64,10 @@ int main()
 {
     ksb::LTree<int> a(100, 0);
     //db(1);
-    *a.begin()=0;
-    for (int i = 1; i < 100; ++i)
+    //*a.begin()=1;
+    for (int i = 0; i < 100; ++i)
     {
-        a[i] = i;
+        a[i] = i+1;
     }
     //a.printData();
     // for (int i = 0; i <= 10000; ++i){
@@ -96,8 +96,10 @@ int main()
     //     }
     // }
     LOL ttt;
-    ttt.a = a;
+    ttt.a = &a;
     //cout<<ttt(1,2)<<el;
+    //std::iter_swap(a.begin(), a.begin()+50);
+    //a.printData();
     auto start = chrono::high_resolution_clock::now();
     sort(a.begin(), a.end(), ttt);
     // reverse(a.begin(), a.end());
