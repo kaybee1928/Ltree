@@ -65,9 +65,9 @@ int main()
 {
     vll a(100, 0);
     //db(1);
-    for (int i = 0; i < 100; ++i)
+    for (int i = 0; i < 1000; ++i)
     {
-        a[i] = i+1;
+        a[i] = rand()%1024;
     }
     //a.printData();
     // for (int i = 0; i <= 10000; ++i){
@@ -95,11 +95,9 @@ int main()
     //         }
     //     }
     // }
-    LOL ttt;
-    ttt.a = &a;
     //cout<<ttt(1,2)<<el;
     auto start = chrono::high_resolution_clock::now();
-    sort(a.begin(), a.end(), ttt);
+    sort(a.begin(), a.end());
     // reverse(a.begin(), a.end());
     auto end = chrono::high_resolution_clock::now(); 
     // db(2);

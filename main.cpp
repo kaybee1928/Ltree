@@ -62,12 +62,12 @@ struct LOL{
 
 int main()
 {
-    ksb::LTree<int> a(100, 0);
+    ksb::LTree<int> a(1000, 0);
     //db(1);
     //*a.begin()=1;
-    for (int i = 0; i < 100; ++i)
+    for (int i = 0; i < 1000; ++i)
     {
-        a[i] = i+1;
+        a[i] = i;
     }
     //a.printData();
     // for (int i = 0; i <= 10000; ++i){
@@ -95,13 +95,11 @@ int main()
     //         }
     //     }
     // }
-    LOL ttt;
-    ttt.a = &a;
     //cout<<ttt(1,2)<<el;
     //std::iter_swap(a.begin(), a.begin()+50);
     //a.printData();
     auto start = chrono::high_resolution_clock::now();
-    sort(a.begin(), a.end(), ttt);
+    //sort(a.begin(), a.end());
     // reverse(a.begin(), a.end());
     auto end = chrono::high_resolution_clock::now(); 
     // db(2);
@@ -113,6 +111,12 @@ int main()
     // {
     //     cout<<(*(itr + i))<<" ";
     // }
+    auto itr = a.begin();
+    while(itr!=a.end()){
+        cerr<<(*itr)<<" ";
+        ++itr;
+    }
+    cout<<el;
     double tt =  
       chrono::duration_cast<chrono::nanoseconds>(end - start).count(); 
 
