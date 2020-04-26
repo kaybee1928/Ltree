@@ -5,9 +5,9 @@
 
 
 namespace ksb{
-    int c = 0;
-    int cc = 0;
-    int dd = 0;
+    // int c = 0;
+    // int cc = 0;
+    // int dd = 0;
     template<typename T>
     class LTree
     {
@@ -69,18 +69,21 @@ namespace ksb{
         LTree(size_t n = 0, T dt = T()): _sz(n){
             size_t it = 1;
             _dt = dt;
-
+            _end = new _list(nullptr, this);
+            _head = _end;
+            _prnt = nullptr;
+            _mxsz = n+1;
             if(n > 0)
             {
                 // initialising _end and _head
                 --n;
                 _list *tt = nullptr;
                 _list *pr = nullptr;
-                _prnt = nullptr;
+                
                 _end = new _list(new LTree<T>(0, dt), this);
                 _end -> _st -> _prnt = _end;
                 _head = _end;
-                _mxsz = n+1;
+                
 
                 // distributing data across subtree of max-size 1
                 if(n>0){
@@ -117,6 +120,115 @@ namespace ksb{
                 }
             }
         };
+
+        
+
+        LTree(const LTree<T>& x){
+            size_t n = x._sz;
+            T dt = T();
+            _sz = n;
+            size_t it = 1;
+            _dt = dt;
+            _head = _end = nullptr;
+            _prnt = nullptr;
+            _mxsz = n+1;
+            if(n > 0)
+            {
+                // initialising _end and _head
+                --n;
+                _list *tt = nullptr;
+                _list *pr = nullptr;
+                
+                _end = new _list(new LTree<T>(0, dt), this);
+                _end -> _st -> _prnt = _end;
+                _head = _end;
+                
+
+                // distributing data across subtree of max-size 1
+                if(n>0){
+                    size_t ssz = std::min(it, n);
+                    _head = new _list(new LTree<T>(ssz, dt), this);
+                    _head -> _st -> _prnt = _head;
+                    _head -> _st -> _mxsz = it;
+                    _head -> _rr = pr;
+                    _head -> _ft = _end;
+                    _end -> _rr = _head;
+                    pr = _head;
+                    tt = _head -> _ft;
+                    if(it >= n) n = 0;
+                    else n = n - it;
+                    it = it * 2;
+                }
+
+                // distributing data across subtree of max-size 2, 4, 8, 16, 32, .......
+                while(n>0){
+                    size_t ssz = std::min(it, n);
+                    tt = new _list(new LTree<T>(ssz, dt), this);
+                    tt -> _st -> _prnt = tt;
+                    tt -> _st -> _mxsz = it;
+                    tt -> _rr = pr;
+                    tt -> _ft = pr -> _ft;
+                    pr -> _st -> _end -> _st = tt -> _st;
+                    pr -> _ft -> _rr = tt;
+                    pr -> _ft = tt;
+                    pr = tt;
+                    tt = tt -> _ft;
+                    if(it >= n) n = 0;
+                    else n = n - it;
+                    it = it * 2;
+                }
+            }
+            iterator a = begin();
+            iterator b = x.begin();
+            while(b != x.end()){
+                *a = *b;
+                ++a;
+                ++b;
+            }
+        }
+
+        LTree(LTree<T> &&x){
+            _sz = x._sz;
+            _head = x._head;
+            _end = x._end;
+            _mxsz = x._mxsz;
+            _prnt = x._prnt;
+            _dt = x._dt;
+            x._sz = 0;
+            x._dt = T();
+            x._head = x._end = nullptr;
+            x._mxsz = 1;
+
+        }
+
+        template<typename I, typename = std::_RequireInputIter<I>>
+        LTree(I __first, I __last){
+            size_t n = 0;
+            T dt = T();
+            _sz = n;
+            _dt = dt;
+            _head = _end = nullptr;
+            _prnt = nullptr;
+            while(__first != __last){
+                push_back(*__first);
+                ++__first;
+            }
+        }
+
+        LTree(std::initializer_list<T> init){
+            size_t n = 0;
+            T dt = T();
+            _sz = n;
+            _dt = dt;
+            _head = _end = nullptr;
+            _prnt = nullptr;
+            typename std::initializer_list<T>::iterator __first = init.begin();
+            typename std::initializer_list<T>::iterator __last = init.end();
+            while(__first != __last){
+                push_back((*__first));
+                ++__first;
+            }
+        }
 
         class iterator : public std::iterator<std::random_access_iterator_tag, T, ptrdiff_t, T*, T&>
         {
@@ -221,7 +333,7 @@ namespace ksb{
 
             iterator operator+(unsigned int inc){
                 // dbs(" +x "<< (_ptr->_dt)<<" "<<( inc));
-                ++c;
+                // ++c;
                 if(inc == 0) return *this;
                 if(inc == 1) {
                     iterator tmp = *this;
@@ -356,6 +468,7 @@ namespace ksb{
 
             bool operator==(const iterator &x){
                 // dbs(" == "<< (_ptr->_dt)<<" "<<( x._ptr -> _dt));
+                if(x._ptr == nullptr && _ptr == nullptr) return true;
                 if(x._ptr == nullptr || _ptr == nullptr) return false;
                 return x._ptr == _ptr;
             }
@@ -372,6 +485,7 @@ namespace ksb{
             return iterator(this);
         }
         iterator end(){
+            if(_end == nullptr) return iterator(nullptr);
             return iterator(_end->_st);
         }
 
@@ -400,29 +514,112 @@ namespace ksb{
         }
 
         T front(){
-            return *(end() - 1);
+            return *(begin());
         }
 
-        void push_back(){
+        
+        void push_back(const T& k){
+            _list *tt = _head;
+            //dbs(0);
+            ++_sz;
+            if(_head == _end){
+                //dbs(1);
+                if(_prnt == nullptr){
+                    //dbs(2);
+                    if(_head == nullptr){
 
+                        _sz = 1;
+                        _dt = k;
+                        _end = new _list(new LTree<T>(0, T()), this);
+                        _end -> _st -> _prnt = _end;
+                        _head = _end;
+                        return;
+                    }
+                }
+                size_t ssz = 1;
+                _head = new _list(new LTree<T>(ssz, k), this);
+                _head -> _st -> _prnt = _head;
+                _head -> _st -> _mxsz = ssz;
+                _head -> _rr = nullptr;
+                _head -> _ft = _end;
+                _end -> _rr = _head;
+                return;
+            }
+            tt = _head;
+            while(tt->_ft != _end) tt = tt -> _ft;
+            if(tt->_st->_sz < tt -> _st -> _mxsz){
+                tt -> _st -> push_back(k);
+                return;
+            }
+            size_t ssz = 1;
+            //dbs(" before "<<(tt -> _st -> _dt)<<"  "<<(tt -> _ft == _end) );
+            
+            _list *tmp= new _list(new LTree<T>(ssz, k), this);
+            tmp -> _st -> _prnt = tmp;
+            tmp -> _ft = tt -> _ft;
+            tmp -> _rr = tt;
+            tt -> _ft = tmp;
+            tmp -> _ft -> _rr = tmp;
+            //dbs(0);
+            tmp -> _st -> _mxsz = (tt -> _st -> _mxsz) * 2;
+            //dbs(0);
         }
-
 
         void pop(){
+            // dbs(" popopop ");
+            // --_sz;
+            _list *tt = _head;
+            if(_head == _end){
+                if(_prnt == nullptr){
+                    delete _head;
+                    _head = _end = new _list(nullptr, this);
+                    _dt = 0;
+                    _sz = 0;
+                    return;
+                }
+                LTree<T> *tmp = _prnt -> __prnt;
+                if(tmp -> _head == _prnt){
+                    // dbs(" pop "<<(tmp -> _head  ->_st->_dt)<<" "<<(tmp -> _dt));
+                    delete tmp -> _head  -> _st;
+                    delete tmp -> _head;
+                    tmp -> _head = tmp -> _end;
+                    tmp -> _head -> _ft = tmp -> _head -> _rr = nullptr; 
+                    while(tmp->_prnt!=nullptr){
+                        --(tmp->_sz);
+                        tmp = tmp -> _prnt -> __prnt;
+                    }
+                    --(tmp->_sz);
 
-        }
-
-        void stabilize(){
-
+                    //--(tmp -> _sz);
+                    return;
+                }
+                tt = _prnt;
+                // dbs(" pop "<<(tt->_st->_dt));
+                delete tt -> _st;
+                tt -> _ft -> _rr = tt -> _rr;
+                tt -> _rr -> _ft = tt -> _ft;
+                delete tt;
+                while(tmp->_prnt!=nullptr){
+                    --(tmp->_sz);
+                    tmp = tmp -> _prnt -> __prnt;
+                }
+                --(tmp->_sz);
+                return;
+            }
+            while(tt->_ft != _end) tt = tt -> _ft;
+            
+            // dbs(" pop "<<(tt->_st->_dt));
+            tt -> _st -> pop();
         }
 
         void insert(unsigned int pos, const T &k){
+            // dbs(0);
             if(pos == 0)
             {
                 if(_prnt != nullptr){
                     T ele = k;
                     LTree<T> *tmp;
-                    if(_sz == 1){  
+                    if(_sz == 1 && _prnt -> __prnt -> _prnt != nullptr){  
                         tmp = _prnt -> __prnt;  
                     }
                     else{
@@ -431,27 +628,79 @@ namespace ksb{
                         tmp = this;
                     }
                     _list *newd = new _list(new LTree<T>(1, ele), tmp);
-
+                    newd -> _st -> _prnt = newd;
+                    // dbs(1);
                     newd -> _ft = tmp -> _head;
+                    tmp -> _head-> _rr = newd;
                     tmp -> _head = newd;
                     LTree<T> *tmp2 = tmp;
-                    ++(tmp -> _sz);
+                    while(tmp->_prnt!=nullptr){
+                        ++(tmp->_sz);
+                        tmp = tmp -> _prnt -> __prnt;
+                    }
+                    ++(tmp->_sz);
+                    tmp = tmp2;
+                    // dbs(2);
                     while (tmp -> _prnt -> _ft == tmp -> _prnt -> __prnt -> _end && tmp -> _prnt -> __prnt -> _prnt != nullptr) 
                         tmp = tmp -> _prnt -> __prnt;
                     if(tmp -> _prnt -> _ft == tmp -> _prnt -> __prnt -> _end && tmp -> _prnt -> __prnt -> _prnt == nullptr){
                         if(tmp -> _sz == tmp -> _mxsz ){
-                            tmp -> _prnt -> __prnt -> stabilize();
-                            return;
+                            // dbs(" okay okay");
+                            //tmp -> _prnt -> __prnt -> stabilize();
+                            
                         }
-                        else if(tmp -> _sz > tmp -> _mxsz){
+                        else{
+                            // dbs(" not okay");
                             ele = tmp ->  back();
-                            tmp -> _prnt -> __prnt -> stabilize();
+                            tmp->pop();
+                            //tmp -> _prnt -> __prnt -> stabilize();
                             tmp -> _prnt -> __prnt -> push_back(ele);
                         }
+                        if(tmp2 -> _sz > 1){
+                            newd = tmp2 -> _head;
+                            while(newd -> _ft != tmp2 -> _end && newd -> _ft -> _ft != tmp2 -> _end){
+                                size_t sz1 = newd -> _st -> _sz;
+                                size_t sz2 = newd -> _ft -> _st -> _sz;
+                                size_t sz3 = newd -> _ft -> _ft -> _st -> _sz;
+                                if(sz1 == sz2 && sz2 == sz3){
+                                    // dbs(" "<<(newd->_st->_dt)<<" "<<(newd->_ft->_st->_dt)<<" "<<(newd->_ft->_ft->_st->_dt));
+                                    if(sz2 == 1){
+                                        // dbs(" Fucked ");
+                                        newd -> _ft -> _st -> _head = newd -> _ft -> _ft;
+                                        newd -> _ft -> _ft = newd -> _ft -> _ft -> _ft;
+                                        newd -> _ft -> _st -> _head -> _ft = newd -> _ft -> _st -> _end;
+                                        newd -> _ft -> _st -> _end -> _rr = newd -> _ft -> _st -> _head;
+                                        newd -> _ft -> _st -> _head -> _rr = nullptr;
+                                        newd -> _ft -> _st -> _head -> __prnt = newd -> _ft -> _st;
+                                        newd -> _ft -> _st -> _head -> _st -> _prnt = newd -> _ft -> _st -> _head;
+                                        newd -> _ft -> _ft -> _rr = newd -> _ft ;
+                                        newd -> _ft -> _st -> _sz = 2;
+                                        newd -> _ft -> _st ->  _mxsz = 2;
+                                        
+                                    }
+                                    else{
+                                        _list *tmp3 = newd -> _ft -> _ft;
+                                        newd -> _ft -> _ft = newd -> _ft -> _ft -> _ft;
+                                        newd -> _ft -> _ft -> _rr = tmp3 -> _rr;
+                                        newd -> _ft -> _st -> _end -> _rr -> _ft = tmp3;
+                                        tmp3 -> _rr = newd -> _ft -> _st -> _end -> _rr;
+                                        tmp3 -> _ft = newd -> _ft -> _st -> _end;
+                                        tmp3 -> __prnt = newd -> _ft -> _st;
+                                        newd -> _ft -> _st -> _end -> _rr = tmp3;
+                                        newd -> _ft -> _st -> _sz = newd -> _ft -> _st -> _sz + tmp3 -> _st -> _sz;
+                                        newd -> _ft -> _st -> _mxsz = newd -> _ft -> _st -> _mxsz*2;
+                                    }
+                                }
+                                newd = newd -> _ft;
+                            }
+                        }
                         return;  
-                    } 
+                    }
+                    // dbs(3);
                     ele = tmp2 ->  back();
+                    // dbs(" ele "<<ele<<" ");
                     tmp2 -> pop();
+                    
                     tmp -> _prnt -> _ft -> _st -> insert(0, ele);
                     if(tmp2 -> _sz > 1){
                         newd = tmp2 -> _head;
@@ -460,26 +709,47 @@ namespace ksb{
                             size_t sz2 = newd -> _ft -> _st -> _sz;
                             size_t sz3 = newd -> _ft -> _ft -> _st -> _sz;
                             if(sz1 == sz2 && sz2 == sz3){
+                                // dbs(" "<<(newd->_st->_dt)<<" "<<(newd->_ft->_st->_dt)<<" "<<(newd->_ft->_ft->_st->_dt));
                                 if(sz2 == 1){
+                                    // dbs(" Fucked ");
                                     newd -> _ft -> _st -> _head = newd -> _ft -> _ft;
                                     newd -> _ft -> _ft = newd -> _ft -> _ft -> _ft;
                                     newd -> _ft -> _st -> _head -> _ft = newd -> _ft -> _st -> _end;
-                                    newd -> _ft -> _ft -> _rr = newd -> _ft -> _st -> _head -> _rr;
+                                    newd -> _ft -> _st -> _end -> _rr = newd -> _ft -> _st -> _head;
                                     newd -> _ft -> _st -> _head -> _rr = nullptr;
+                                    newd -> _ft -> _st -> _head -> __prnt = newd -> _ft -> _st;
+                                    newd -> _ft -> _st -> _head -> _st -> _prnt = newd -> _ft -> _st -> _head;
+                                    newd -> _ft -> _ft -> _rr = newd -> _ft ;
+                                    newd -> _ft -> _st -> _sz = 2;
+                                    newd -> _ft -> _st ->  _mxsz = 2;
+                                    
                                 }
                                 else{
                                     _list *tmp3 = newd -> _ft -> _ft;
                                     newd -> _ft -> _ft = newd -> _ft -> _ft -> _ft;
                                     newd -> _ft -> _ft -> _rr = tmp3 -> _rr;
-                                    newd -> _ft -> _end -> _rr -> _ft = tmp3;
-                                    tmp3 -> _rr = newd -> _ft -> _end -> _rr;
-                                    tmp3 -> _ft = newd -> _ft -> _end;
+                                    newd -> _ft -> _st -> _end -> _rr -> _ft = tmp3;
+                                    tmp3 -> _rr = newd -> _ft -> _st -> _end -> _rr;
+                                    tmp3 -> _ft = newd -> _ft -> _st -> _end;
+                                    tmp3 -> __prnt = newd -> _ft -> _st;
+                                    newd -> _ft -> _st -> _end -> _rr = tmp3;
+                                    newd -> _ft -> _st -> _sz = newd -> _ft -> _st -> _sz + tmp3 -> _st -> _sz;
+                                    newd -> _ft -> _st -> _mxsz = newd -> _ft -> _st -> _mxsz*2;
                                 }
                             }
                             newd = newd -> _ft;
                         }
                     }
                 }
+                else{
+                    if(_sz == 0) push_back(k);
+                    else{
+                        T ele = _dt;
+                        _dt = k;
+                        insert(1, ele);
+                    }
+                }
+                return;
             }
             _list *tt = _head;
             _list *tp = tt;
@@ -493,24 +763,29 @@ namespace ksb{
                 ++itr;
                 tt = tt -> _ft;
             }
+            push_back(k);
         }
 
 
 
 
-        void printData(){
-            //for(int i = 0 ; i < c; ++i) std::cout<<" ";
-            std::cout<<_dt<<" ";
-            _list * tt = _head;
-            while(tt != tt -> __prnt -> _end){
-                tt->_st->printData();
-                tt = tt->_ft;
-            }
-        }
+        // void printData(){
+        //     ++c;
+        //     for(int i = 0 ; i < c; ++i) std::cout<<" ";
+        //     std::cout<<_dt<<" "<<_sz<<"\n";
+        //     _list * tt = _head;
+        //     while(tt != tt -> __prnt -> _end){
+        //         tt->_st->printData();
+        //         tt = tt->_ft;
+        //     }
+        //     --c;
+        // }
 
         size_t size(){
             return _sz;
         }
+
+
     };
 }
 

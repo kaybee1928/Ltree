@@ -51,7 +51,6 @@ void desperate_optimization(int precision){
 struct LOL{
     ksb::LTree<int> *a;
     bool operator()(int _a, int _b){
-        a->printData();
         cout<<el;
         return _a < _b;
     }
@@ -62,13 +61,16 @@ struct LOL{
 
 int main()
 {
-    ksb::LTree<int> a(1000, 0);
+    ksb::LTree<int> a = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29};
+    FOR(i,15,30){
+        a[i] = rand()%1024;
+    }
     //db(1);
     //*a.begin()=1;
-    for (int i = 0; i < 1000; ++i)
-    {
-        a[i] = i;
-    }
+    // for (int i = 0; i < 10; ++i)
+    // {
+    //     a.push_back(i);
+    // }
     //a.printData();
     // for (int i = 0; i <= 10000; ++i){
     //     //cout<<i<<el;
@@ -98,10 +100,10 @@ int main()
     //cout<<ttt(1,2)<<el;
     //std::iter_swap(a.begin(), a.begin()+50);
     //a.printData();
-    auto start = chrono::high_resolution_clock::now();
-    //sort(a.begin(), a.end());
-    // reverse(a.begin(), a.end());
-    auto end = chrono::high_resolution_clock::now(); 
+    // auto start = chrono::high_resolution_clock::now();
+    // //sort(a.begin(), a.end());
+    // // reverse(a.begin(), a.end());
+    // auto end = chrono::high_resolution_clock::now(); 
     // db(2);
     // while(itr!=a.end()){
     //     cout<<(*itr)<<" ";
@@ -112,16 +114,71 @@ int main()
     //     cout<<(*(itr + i))<<" ";
     // }
     auto itr = a.begin();
+    // while(itr!=a.end()){
+    //     cerr<<(*itr)<<" ";
+    //     ++itr;
+    // }
+    // cout<<el;
+    // FOR(i,0,10){
+        
+    //     itr = a.begin();
+    //     while(itr!=a.end()){
+    //         cerr<<(*itr)<<" ";
+    //         ++itr;
+    //     }
+    //     cout<<el;
+    //     a.pop();
+    // }
+    // cout<<el;
+    // FOR(i,0,10){
+    //     a.push_back(i);
+    //     itr = a.begin();
+    //     while(itr!=a.end()){
+    //         cerr<<(*itr)<<" ";
+    //         ++itr;
+    //     }
+    //     cout<<el;
+    // }
+    cout<<el;
+    while(itr!=a.end()){
+        cerr<<(*itr)<<" ";
+        ++itr;
+    }
+    cout<<el;cout<<el;
+    FOR(i,0,30){
+        a.insert(i,rand()%1024);
+        itr = a.begin();
+        while(itr!=a.end()){
+            cerr<<(*itr)<<" ";
+            ++itr;
+        }
+        cout<<el;cout<<el;
+        // a.printData();
+    }
+    sort(a.begin(), a.end());
+    itr = a.begin();
     while(itr!=a.end()){
         cerr<<(*itr)<<" ";
         ++itr;
     }
     cout<<el;
-    double tt =  
-      chrono::duration_cast<chrono::nanoseconds>(end - start).count(); 
+    cout<<el;
+    reverse(a.begin(), a.end());
+    itr = a.begin();
+    while(itr!=a.end()){
+        cerr<<(*itr)<<" ";
+        ++itr;
+    }
+    cout<<el;
+    cout<<el;
+    auto xx = find(a.begin(), a.end(), 13);
+    cout<<(*xx)<<el;
+    cout<<(xx-a.begin())<<el;
+    // double tt =  
+    //   chrono::duration_cast<chrono::nanoseconds>(end - start).count(); 
 
-    tt *= 1e-9; 
-    cout<<tt<<el;
+    // tt *= 1e-9; 
+    // cout<<tt<<el;
     // cout<<((a.begin() + 2) < (a.begin() + 10))<<el;
     // cout<<((a.begin() + 12) < (a.begin() + 10))<<el;
     return 0;
