@@ -477,6 +477,7 @@ namespace ksb{
                 // dbs(" != "<< (_ptr->_dt)<<" "<<( x._ptr -> _dt));
                 return !this->operator==(x);
             }
+            friend class LTree<T>;
 
         };
 
@@ -546,7 +547,7 @@ namespace ksb{
                 return;
             }
             tt = _head;
-            while(tt->_ft != _end) tt = tt -> _ft;
+            tt = _end -> _rr;
             if(tt->_st->_sz < tt -> _st -> _mxsz){
                 tt -> _st -> push_back(k);
                 return;
@@ -606,11 +607,12 @@ namespace ksb{
                 --(tmp->_sz);
                 return;
             }
-            while(tt->_ft != _end) tt = tt -> _ft;
+            tt = _end -> _rr;
             
             // dbs(" pop "<<(tt->_st->_dt));
             tt -> _st -> pop();
         }
+
 
         void insert(unsigned int pos, const T &k){
             // dbs(0);
@@ -766,8 +768,45 @@ namespace ksb{
             push_back(k);
         }
 
+        void insert(iterator pos, const T& k){
+            pos._ptr->insert(0,k);
+        }
 
 
+        ///////////////////////////////////////////// TEMPORARY IMPLEMENTATION /////////////////////////////////////////////
+
+        void sort(){
+            std::vector<T> v(_sz);
+            iterator itr = begin();
+            for(T &t :v){
+                t = *itr;
+                ++itr;
+            }
+            std::sort(v.begin(), v.end());
+            itr = begin();
+            for(T &t :v){
+                *itr = t;
+                ++itr;
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        ///////////////////////////////////////////// TEMPORARY IMPLEMENTATION /////////////////////////////////////////////
+
+        void reverse(){
+            size_t n = _sz/2;
+            size_t i = 0;
+            while(n--){
+                T tmp = back();
+                pop();
+                insert(i,tmp);
+                ++i;
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // void printData(){
         //     ++c;

@@ -61,10 +61,14 @@ struct LOL{
 
 int main()
 {
-    ksb::LTree<int> a = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29};
-    FOR(i,15,30){
-        a[i] = rand()%1024;
+    // ksb::LTree<int> a = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29};
+    ksb::LTree<int> a(1000,3);
+    FOR(i,13,1000){
+        a[i] = i;
     }
+    // FOR(i,15,30){
+    //     a[i] = i;
+    // }
     //db(1);
     //*a.begin()=1;
     // for (int i = 0; i < 10; ++i)
@@ -113,7 +117,7 @@ int main()
     // {
     //     cout<<(*(itr + i))<<" ";
     // }
-    auto itr = a.begin();
+    
     // while(itr!=a.end()){
     //     cerr<<(*itr)<<" ";
     //     ++itr;
@@ -139,6 +143,7 @@ int main()
     //     }
     //     cout<<el;
     // }
+    auto itr = a.begin();
     cout<<el;
     while(itr!=a.end()){
         cerr<<(*itr)<<" ";
@@ -172,8 +177,14 @@ int main()
     cout<<el;
     cout<<el;
     auto xx = find(a.begin(), a.end(), 13);
-    cout<<(*xx)<<el;
-    cout<<(xx-a.begin())<<el;
+    if(xx != a.end()){
+        cout<<(*xx)<<el;
+        cout<<(xx-a.begin())<<el;
+    }
+    xx = find(a.begin(), a.end(), 13000000);
+    if(xx == a.end()){
+        cout<<13000000<<" Not Found"<<el;
+    }
     // double tt =  
     //   chrono::duration_cast<chrono::nanoseconds>(end - start).count(); 
 
