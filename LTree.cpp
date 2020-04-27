@@ -796,13 +796,21 @@ namespace ksb{
         ///////////////////////////////////////////// TEMPORARY IMPLEMENTATION /////////////////////////////////////////////
 
         void reverse(){
-            size_t n = _sz/2;
-            size_t i = 0;
-            while(n--){
-                T tmp = back();
-                pop();
-                insert(i,tmp);
-                ++i;
+            std::list<T> l;
+            iterator itr = begin();
+            iterator e = end();
+            while(itr != e){
+                l.push_back(*itr);
+                ++itr;
+            }
+            l.reverse();
+            itr = begin();
+            typename std::list<T>::iterator itr2 = l.begin();
+            typename std::list<T>::iterator e2 = l.end();
+            while(itr2 != e2){
+                *itr = *itr2;
+                ++itr;
+                ++itr2;
             }
         }
 
