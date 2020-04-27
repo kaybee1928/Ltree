@@ -2,7 +2,7 @@
 
 
 ## Author
-K Shrinidhi Bhagavath (AKA Ganzaki)
+K Shrinidhi Bhagavath (AKA Ganzaki) and 
 Jha Prince
 
 ## Abstract
