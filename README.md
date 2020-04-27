@@ -1,9 +1,19 @@
 # LTree
 
 
+## Author
+K Shrinidhi Bhagavath (AKA Ganzaki)
+Jha Prince
+
 ## Abstract
 Included in Abstract.pdf file
 
+
+## To download
+Use following git command to download
+```bash
+git clone https://gitlab.com/Ganzaki/ltree.git
+```
 
 
 ## How to use
