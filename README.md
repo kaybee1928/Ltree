@@ -6,7 +6,7 @@ K Shrinidhi Bhagavath (AKA Ganzaki) and
 Jha Prince
 
 ## Abstract
-Included in Abstract.pdf file
+Included in [Abstract.pdf](./Abstract.pdf) file
 
 
 ## To download
